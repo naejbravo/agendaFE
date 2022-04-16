@@ -8,6 +8,9 @@ import moment from "moment";
 import "moment/locale/es";
 import "react-datepicker/dist/react-datepicker.css";
 import "./App.css";
+
+import NewEvent from "./components/NewEvent";
+
 registerLocale("es", es);
 
 const urlLocal = "http://localhost:8000/agenda";
@@ -25,10 +28,6 @@ const customStyles = {
 };
 
 Modal.setAppElement("body");
-
-const locales = {
-  es: es,
-};
 
 moment.locale("es");
 
@@ -87,6 +86,7 @@ function App() {
         item.end = new Date(item.end);
       });
       setEvents(data);
+      console.log(data);
     } catch (error) {
       return error;
     }
@@ -133,8 +133,9 @@ function App() {
   const onUpdateEvent = async (e) => {
     try {
       console.log(dataModal._id);
+      console.log(dataModal.start.toISOString());
       const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
-        method: "put",
+        method: "PATCH",
         mode: "cors",
         headers: {
           Accept: "application/json",
@@ -164,9 +165,28 @@ function App() {
     setIsOpenConfirm(false);
   }
 
+  function handleNewEventTitle(value) {
+    setNewEvent({ ...newEvent, title: value });
+  }
+
+  function handleNewEventStartDate(value) {
+    setNewEvent({ ...newEvent, start: value });
+  }
+
+  function handleNewEventEndDate(value) {
+    setNewEvent({ ...newEvent, end: value });
+  }
+
   return (
     <div className="App">
-      <h2>Nuevo evento</h2>
+      <NewEvent
+        newEvent={newEvent}
+        handleEvent={handleEvent}
+        changeTitle={handleNewEventTitle}
+        changeStartDate={handleNewEventStartDate}
+        changeEndDate={handleNewEventEndDate}
+      />
+      {/* <h2>Nuevo evento</h2>
       <div className="pick">
         <input
           type="text"
@@ -203,7 +223,7 @@ function App() {
         </div>
 
         <button onClick={handleEvent}>Agregar evento</button>
-      </div>
+      </div> */}
       <Calendar
         localizer={localizerMoment}
         startAccessor="start"
