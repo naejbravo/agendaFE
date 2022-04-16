@@ -41,7 +41,7 @@ export default function UpdateEvent(props) {
             timeFormat="HH:mm"
             timeIntervals={60}
             timeCaption="hora"
-            dateFormat="MMMM d, yyyy HH:mm:ss aa"
+            dateFormat="MMMM d, yyyy HH:mm:ss"
             locale="es"
           />
         </label>
@@ -58,7 +58,7 @@ export default function UpdateEvent(props) {
             timeIntervals={60}
             timeFormat="HH:mm"
             timeCaption="hora"
-            dateFormat="MMMM d, yyyy HH:mm:ss aa"
+            dateFormat="MMMM d, yyyy HH:mm:ss"
             locale="es"
           />
         </label>
