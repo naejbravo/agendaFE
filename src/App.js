@@ -133,7 +133,7 @@ function App() {
   const onUpdateEvent = async (e) => {
     try {
       console.log(dataModal._id);
-      console.log(dataModal.start.toISOString());
+      console.log(dataModal.start);
       const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
         method: "PATCH",
         mode: "cors",
@@ -143,11 +143,12 @@ function App() {
         },
         body: JSON.stringify({
           title: dataModal.title,
-          startDate: dataModal.start.toISOString(),
-          endDate: dataModal.end.toISOString(),
+          startDate: dataModal.start,
+          endDate: dataModal.end,
         }),
       });
       const data = await fetchResponse.json();
+      console.log(data);
       getEvents();
       setIsOpenConfirm(false);
       setIsOpen(false);
