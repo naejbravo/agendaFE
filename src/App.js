@@ -76,6 +76,7 @@ function App() {
     try {
       const requestOptions = {
         method: "POST",
+        mode: "cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: newEvent.title,
@@ -93,7 +94,10 @@ function App() {
 
   const getEvents = async () => {
     try {
-      const fetchResponse = await fetch(urlCloud);
+      const fetchResponse = await fetch(urlCloud, {
+        method: "GET",
+        mode: "cors",
+      });
       const data = await fetchResponse.json();
       data.map((item) => {
         item["start"] = item["startDate"];
@@ -114,6 +118,7 @@ function App() {
       console.log(dataModal._id);
       const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
         method: "DELETE",
+        mode: "cors",
       });
       const data = await fetchResponse.json();
       setIsOpenConfirm(false);
