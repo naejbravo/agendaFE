@@ -1,14 +1,5 @@
-import {
-  Calendar,
-  dateFnsLocalizer,
-  momentLocalizer,
-} from "react-big-calendar";
-import ReactDOM from "react-dom";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import Modal from "react-modal";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import React, { useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -41,18 +32,6 @@ const locales = {
 
 moment.locale("es");
 
-const formats = {
-  timeGutterFormat: "HH:mm",
-};
-
-const localizerFns = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
-
 const localizerMoment = momentLocalizer(moment);
 
 function App() {
@@ -84,7 +63,7 @@ function App() {
           endDate: newEvent.end.toISOString(),
         }),
       };
-      const fetchResponse = await fetch(urlCloud, requestOptions);
+      const fetchResponse = await fetch(urlLocal, requestOptions);
       const data = await fetchResponse.json();
       getEvents();
     } catch (error) {
@@ -94,7 +73,7 @@ function App() {
 
   const getEvents = async () => {
     try {
-      const fetchResponse = await fetch(urlCloud, {
+      const fetchResponse = await fetch(urlLocal, {
         method: "GET",
         mode: "cors",
       });
@@ -116,7 +95,7 @@ function App() {
   const deleteEvent = async () => {
     try {
       console.log(dataModal._id);
-      const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
+      const fetchResponse = await fetch(`${urlLocal}/${dataModal._id}`, {
         method: "DELETE",
         mode: "cors",
       });
@@ -154,7 +133,7 @@ function App() {
   const onUpdateEvent = async (e) => {
     try {
       console.log(dataModal._id);
-      const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
+      const fetchResponse = await fetch(`${urlLocal}/${dataModal._id}`, {
         method: "put",
         mode: "cors",
         headers: {
