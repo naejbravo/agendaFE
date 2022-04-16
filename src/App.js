@@ -63,7 +63,7 @@ function App() {
           endDate: newEvent.end.toISOString(),
         }),
       };
-      const fetchResponse = await fetch(urlLocal, requestOptions);
+      const fetchResponse = await fetch(urlCloud, requestOptions);
       const data = await fetchResponse.json();
       getEvents();
     } catch (error) {
@@ -73,7 +73,7 @@ function App() {
 
   const getEvents = async () => {
     try {
-      const fetchResponse = await fetch(urlLocal, {
+      const fetchResponse = await fetch(urlCloud, {
         method: "GET",
         mode: "cors",
       });
@@ -95,7 +95,7 @@ function App() {
   const deleteEvent = async () => {
     try {
       console.log(dataModal._id);
-      const fetchResponse = await fetch(`${urlLocal}/${dataModal._id}`, {
+      const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
         method: "DELETE",
         mode: "cors",
       });
@@ -133,7 +133,7 @@ function App() {
   const onUpdateEvent = async (e) => {
     try {
       console.log(dataModal._id);
-      const fetchResponse = await fetch(`${urlLocal}/${dataModal._id}`, {
+      const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
         method: "put",
         mode: "cors",
         headers: {
