@@ -1,17 +1,16 @@
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import Modal from "react-modal";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import React, { useEffect, useState } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
-import es from "date-fns/locale/es";
 import moment from "moment";
 import "moment/locale/es";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import Modal from "react-modal";
+
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
 import "./App.css";
 
 import NewEvent from "./components/NewEvent";
-
-registerLocale("es", es);
+import UpdateEvent from "./components/UpdateEvent";
+import DeleteEventConfirm from "./components/DeleteEventConfirm";
 
 const urlLocal = "http://localhost:8000/agenda";
 const urlCloud = "https://agenda-be.vercel.app/agenda";
@@ -45,7 +44,6 @@ function App() {
   }, []);
 
   const handleEvent = () => {
-    console.log(newEvent);
     setEvents([...events, newEvent]);
     postEvent();
   };
@@ -62,8 +60,7 @@ function App() {
           endDate: newEvent.end.toISOString(),
         }),
       };
-      const fetchResponse = await fetch(urlCloud, requestOptions);
-      const data = await fetchResponse.json();
+      await fetch(urlCloud, requestOptions);
       getEvents();
     } catch (error) {
       return error;
@@ -99,7 +96,7 @@ function App() {
         method: "DELETE",
         mode: "cors",
       });
-      const data = await fetchResponse.json();
+      await fetchResponse.json();
       setIsOpenConfirm(false);
       setIsOpen(false);
       getEvents();
@@ -109,11 +106,7 @@ function App() {
   };
 
   const onSelectEvent = async (e) => {
-    console.log("seleccionado", e);
     setIsOpen(true);
-    // let start = e.start.toDateString();
-    // let end = e.end.toDateString();
-    // console.log(start);
     setDataModal({
       _id: e._id,
       start: e.start,
@@ -123,17 +116,11 @@ function App() {
   };
 
   const onDeleteEvent = async (e) => {
-    console.log("seleccionado para borrar", e);
     setIsOpenConfirm(true);
-    // setDataModal({
-
-    // });
   };
 
-  const onUpdateEvent = async (e) => {
+  const updateEvent = async (e) => {
     try {
-      console.log(dataModal._id);
-      console.log(dataModal.start);
       const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
         method: "PATCH",
         mode: "cors",
@@ -147,8 +134,7 @@ function App() {
           endDate: dataModal.end,
         }),
       });
-      const data = await fetchResponse.json();
-      console.log(data);
+      await fetchResponse.json();
       getEvents();
       setIsOpenConfirm(false);
       setIsOpen(false);
@@ -156,10 +142,6 @@ function App() {
       return error;
     }
   };
-
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-  }
 
   function closeModal() {
     setIsOpen(false);
@@ -178,6 +160,18 @@ function App() {
     setNewEvent({ ...newEvent, end: value });
   }
 
+  function handleUpdateEventTitle(value) {
+    setDataModal({ ...dataModal, title: value });
+  }
+
+  function handleUpdateEventStartDate(value) {
+    setDataModal({ ...dataModal, start: value });
+  }
+
+  function handleUpdateEventEndDate(value) {
+    setDataModal({ ...dataModal, end: value });
+  }
+
   return (
     <div className="App">
       <NewEvent
@@ -187,44 +181,6 @@ function App() {
         changeStartDate={handleNewEventStartDate}
         changeEndDate={handleNewEventEndDate}
       />
-      {/* <h2>Nuevo evento</h2>
-      <div className="pick">
-        <input
-          type="text"
-          placeholder="Titulo"
-          value={newEvent.title}
-          onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-        />
-        <div>
-          <DatePicker
-            placeholderText="Fecha de inicio"
-            selected={newEvent.start}
-            onChange={(start) => setNewEvent({ ...newEvent, start })}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={60}
-            timeCaption="hora"
-            dateFormat="MMMM d, yyyy h:mm aa"
-            locale="es"
-          />
-        </div>
-
-        <div>
-          <DatePicker
-            placeholderText="Fecha de fin"
-            selected={newEvent.end}
-            onChange={(end) => setNewEvent({ ...newEvent, end })}
-            showTimeSelect
-            timeIntervals={60}
-            timeFormat="HH:mm"
-            timeCaption="hora"
-            dateFormat="MMMM d, yyyy h:mm aa"
-            locale="es"
-          />
-        </div>
-
-        <button onClick={handleEvent}>Agregar evento</button>
-      </div> */}
       <Calendar
         localizer={localizerMoment}
         startAccessor="start"
@@ -246,86 +202,47 @@ function App() {
           week: "Semana",
           day: "Día",
           agenda: "Diario",
+          allDay: "Todo el dia",
           noEventsInRange:
             "No hay eventos para montrar en este rango de fechas.",
         }}
       />
       <Modal
         isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Example Modal"
       >
         {dataModal && (
           <div>
-            <label>
-              Titulo:{" "}
-              <input
-                type="text"
-                value={dataModal.title}
-                onChange={(title) =>
-                  setDataModal({ ...dataModal, title: title.target.value })
-                }
-              />
-            </label>
-
-            <div>
-              <label>
-                Fecha inicio:
-                <DatePicker
-                  placeholderText="Fecha de inicio"
-                  selected={dataModal.start}
-                  onChange={(start) => setDataModal({ ...dataModal, start })}
-                  showTimeSelect
-                  timeFormat="HH:mm"
-                  timeIntervals={60}
-                  timeCaption="hora"
-                  dateFormat="MMMM d, yyyy h:mm aa"
-                  locale="es"
-                />
-              </label>
-            </div>
-
-            <div>
-              <label>
-                Fecha fin:
-                <DatePicker
-                  placeholderText="Fecha de fin"
-                  selected={dataModal.end}
-                  onChange={(end) => setDataModal({ ...dataModal, end })}
-                  showTimeSelect
-                  timeIntervals={60}
-                  timeFormat="HH:mm"
-                  timeCaption="hora"
-                  dateFormat="MMMM d, yyyy h:mm aa"
-                  locale="es"
-                />
-              </label>
-            </div>
-            <button onClick={onUpdateEvent}>Guardar cambios</button>
-            <button onClick={onDeleteEvent}>Eliminar evento</button>
-            <button onClick={closeModal}>Cerrar</button>
+            <UpdateEvent
+              dataModal={dataModal}
+              updateTitle={handleUpdateEventTitle}
+              updateStartDate={handleUpdateEventStartDate}
+              updateEndDate={handleUpdateEventEndDate}
+              onCloseModal={closeModal}
+              onDeleteEvent={onDeleteEvent}
+              onUpdateEvent={updateEvent}
+            />
           </div>
         )}
       </Modal>
       <Modal
         isOpen={modalIsOpenConfirm}
-        onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Example Modal"
       >
         {dataModal && (
           <div>
-            <p>¿Estas seguro que deseas eliminar este evento?</p>
-            <button onClick={deleteEvent}>Eliminar</button>
-            <button onClick={closeModal}>Cancelar</button>
+            <DeleteEventConfirm
+              deleteEvent={deleteEvent}
+              closeModal={closeModal}
+            />
           </div>
         )}
       </Modal>
     </div>
   );
 }
-
 export default App;
