@@ -83,7 +83,6 @@ function App() {
         item.end = new Date(item.end);
       });
       setEvents(data);
-      console.log(data);
     } catch (error) {
       return error;
     }
@@ -91,7 +90,6 @@ function App() {
 
   const deleteEvent = async () => {
     try {
-      console.log(dataModal._id);
       const fetchResponse = await fetch(`${urlCloud}/${dataModal._id}`, {
         method: "DELETE",
         mode: "cors",

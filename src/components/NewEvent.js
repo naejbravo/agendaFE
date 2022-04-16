@@ -41,7 +41,7 @@ export default function NewEvent(props) {
             timeFormat="HH:mm"
             timeIntervals={60}
             timeCaption="hora"
-            dateFormat="MMMM d, yyyy h:mm aa"
+            dateFormat="MMMM d, yyyy HH:mm:ss aa"
             locale="es"
           />
         </div>
@@ -56,7 +56,7 @@ export default function NewEvent(props) {
             timeIntervals={60}
             timeFormat="HH:mm"
             timeCaption="hora"
-            dateFormat="MMMM d, yyyy h:mm aa"
+            dateFormat="MMMM d, yyyy HH:mm:ss aa"
             locale="es"
           />
         </div>
