@@ -103,26 +103,13 @@ export default function UpdateEvent(props) {
 
   const deleteEvent = (e) => {
     e.preventDefault();
-    if (
-      props.validate.title.valido === "true" &&
-      props.validate.start.valido === "true" &&
-      props.validate.end.valido === "true"
-    ) {
-      props.onDeleteEvent();
-      setFormularioValido(true);
-      // props.setNewEvent({
-      //   title: "",
-      //   start: "",
-      //   end: "",
-      // });
-      props.setValidate({
-        title: { campo: "", valido: null },
-        start: { campo: "", valido: null },
-        end: { campo: "", valido: null },
-      });
-    } else {
-      setFormularioValido(false);
-    }
+    props.onDeleteEvent();
+    props.setValidate({
+      title: { campo: "", valido: null },
+      start: { campo: "", valido: null },
+      end: { campo: "", valido: null },
+    });
+    setFormularioValido(false);
   };
 
   return (
