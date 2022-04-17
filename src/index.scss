@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
+
+$imperial-red: #e63946ff;
+$honeydew: #f1faeeff;
+$powder-blue: #a8dadcff;
+$celadon-blue: #457b9dff;
+$prussian-blue: #1d3557ff;
+
+*{
+  box-sizing: border-box;
+}
+
+body {
+  background-color:$honeydew;
+  margin: 0;
+  font-family: 'Source Code Pro', monospace !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: $prussian-blue;
+  font-weight: bold;
+}
+
+button{
+  padding: 0;
+  margin: 0;
+  color: $celadon-blue !important;
+  font-family: 'Source Code Pro', monospace !important;
+  border: none;
+  background-color: transparent;
+}
+
+input{
+  font-family: 'Source Code Pro', monospace;
+  color: $prussian-blue !important;
+}
+
+code {
+  font-family: 'Source Code Pro', monospace;
+}
+

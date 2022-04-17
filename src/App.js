@@ -6,7 +6,7 @@ import Modal from "react-modal";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
-import "./App.css";
+import "./App.scss";
 
 import NewEvent from "./components/NewEvent";
 import UpdateEvent from "./components/UpdateEvent";
@@ -15,8 +15,17 @@ import DeleteEventConfirm from "./components/DeleteEventConfirm";
 const urlLocal = "http://localhost:8000/agenda";
 const urlCloud = "https://agenda-be.vercel.app/agenda";
 
+const expresiones = {
+  usuario: /^[a-zA-Z0-9_-]{4,16}$/, // Letras, numeros, guion y guion_bajo
+  nombre: /^[a-zA-ZÀ-ÿ0-9\s]{3,40}$/, // Letras y espacios, pueden llevar acentos.
+  password: /^.{4,12}$/, // 4 a 12 digitos.
+  correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+  telefono: /^\d{7,14}$/, // 7 a 14 numeros.
+};
+
 const customStyles = {
   content: {
+    backgroundColor: "#f0efed",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -33,11 +42,20 @@ moment.locale("es");
 const localizerMoment = momentLocalizer(moment);
 
 function App() {
-  const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    start: "",
+    end: "",
+  });
   const [events, setEvents] = useState();
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [modalIsOpenConfirm, setIsOpenConfirm] = React.useState(false);
   const [dataModal, setDataModal] = React.useState({});
+  const [validate, setValidate] = useState({
+    title: { campo: "", valido: null },
+    start: { campo: "", valido: null },
+    end: { campo: "", valido: null },
+  });
 
   useEffect(() => {
     getEvents();
@@ -111,6 +129,11 @@ function App() {
       end: e.end,
       title: e.title,
     });
+    setValidate({
+      title: { campo: e.title, valido: "true" },
+      start: { campo: e.start, valido: "true" },
+      end: { campo: e.end, valido: "true" },
+    });
   };
 
   const onDeleteEvent = async (e) => {
@@ -135,7 +158,7 @@ function App() {
       await fetchResponse.json();
       getEvents();
       setIsOpenConfirm(false);
-      setIsOpen(false);
+      // setIsOpen(false);
     } catch (error) {
       return error;
     }
@@ -173,11 +196,15 @@ function App() {
   return (
     <div className="App">
       <NewEvent
+        validate={validate}
+        setValidate={setValidate}
         newEvent={newEvent}
+        setNewEvent={setNewEvent}
         handleEvent={handleEvent}
         changeTitle={handleNewEventTitle}
         changeStartDate={handleNewEventStartDate}
         changeEndDate={handleNewEventEndDate}
+        expresiones={expresiones.nombre}
       />
       <Calendar
         localizer={localizerMoment}
@@ -212,17 +239,19 @@ function App() {
         contentLabel="Example Modal"
       >
         {dataModal && (
-          <div>
-            <UpdateEvent
-              dataModal={dataModal}
-              updateTitle={handleUpdateEventTitle}
-              updateStartDate={handleUpdateEventStartDate}
-              updateEndDate={handleUpdateEventEndDate}
-              onCloseModal={closeModal}
-              onDeleteEvent={onDeleteEvent}
-              onUpdateEvent={updateEvent}
-            />
-          </div>
+          <UpdateEvent
+            updateEvent={updateEvent}
+            validate={validate}
+            setValidate={setValidate}
+            dataModal={dataModal}
+            updateTitle={handleUpdateEventTitle}
+            updateStartDate={handleUpdateEventStartDate}
+            updateEndDate={handleUpdateEventEndDate}
+            onCloseModal={closeModal}
+            onDeleteEvent={onDeleteEvent}
+            onUpdateEvent={updateEvent}
+            expresiones={expresiones.nombre}
+          />
         )}
       </Modal>
       <Modal
