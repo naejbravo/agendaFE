@@ -7,15 +7,17 @@
   padding: 10px;
 }
 
+.formDone{
+  font-size: 14px;
+  color: $prussian-blue;
+  text-align: center;
+  grid-column: span 3;
+}
+
 /*estilos de formulario de nuevo evento*/
 .pick{
   margin-bottom: 20px;
-  .formDone{
-    font-size: 14px;
-    color: $prussian-blue;
-    text-align: center;
-    grid-column: span 3;
-  }
+  
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap:10px;

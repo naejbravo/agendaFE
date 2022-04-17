@@ -34,6 +34,7 @@ export default function NewEvent(props) {
 
   const validates = () => {
     setFormularioValido(null);
+    props.setShowMsg(null);
     if (props.expresiones) {
       if (props.expresiones.test(props.validate.title.campo)) {
         props.setValidate({
@@ -50,6 +51,8 @@ export default function NewEvent(props) {
   };
 
   const validateDateStart = () => {
+    setFormularioValido(null);
+    props.setShowMsg(null);
     if (isValid(props.validate.start.campo)) {
       props.setValidate({
         ...props.validate,
@@ -64,6 +67,8 @@ export default function NewEvent(props) {
   };
 
   const validateDateEnd = () => {
+    setFormularioValido(null);
+    props.setShowMsg(null);
     if (isValid(props.validate.end.campo)) {
       props.setValidate({
         ...props.validate,
@@ -86,6 +91,7 @@ export default function NewEvent(props) {
     ) {
       props.handleEvent();
       setFormularioValido(true);
+      props.setShowMsg(true);
       props.setNewEvent({
         title: "",
         start: "",
@@ -98,6 +104,7 @@ export default function NewEvent(props) {
       });
     } else {
       setFormularioValido(false);
+      props.setShowMsg(null);
     }
   };
 
@@ -187,9 +194,9 @@ export default function NewEvent(props) {
         </div>
         <div className="submit">
           <button type="submit">Agregar evento</button>
-          {formularioValido === true && (
+          {/* {formularioValido === true && (
             <p className="formDone">Evento creado!</p>
-          )}
+          )} */}
 
           {formularioValido === false && (
             <p className="error">

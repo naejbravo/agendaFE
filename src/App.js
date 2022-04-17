@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
 import "moment/locale/es";
 import { Calendar, momentLocalizer } from "react-big-calendar";
@@ -47,7 +47,9 @@ function App() {
     start: "",
     end: "",
   });
+  const [showMsg, setShowMsg] = useState(null);
   const [events, setEvents] = useState();
+  const [deleted, setDeleted] = useState(false);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [modalIsOpenConfirm, setIsOpenConfirm] = React.useState(false);
   const [dataModal, setDataModal] = React.useState({});
@@ -115,6 +117,8 @@ function App() {
       await fetchResponse.json();
       setIsOpenConfirm(false);
       setIsOpen(false);
+      setDeleted(true);
+      setShowMsg(false);
       getEvents();
     } catch (error) {
       return error;
@@ -122,6 +126,7 @@ function App() {
   };
 
   const onSelectEvent = async (e) => {
+    setShowMsg(null);
     setIsOpen(true);
     setDataModal({
       _id: e._id,
@@ -167,6 +172,11 @@ function App() {
   function closeModal() {
     setIsOpen(false);
     setIsOpenConfirm(false);
+    setValidate({
+      title: { campo: "", valido: null },
+      start: { campo: "", valido: null },
+      end: { campo: "", valido: null },
+    });
   }
 
   function handleNewEventTitle(value) {
@@ -196,6 +206,9 @@ function App() {
   return (
     <div className="App">
       <NewEvent
+        showMsg={setShowMsg}
+        setShowMsg={setShowMsg}
+        deleted={deleted}
         validate={validate}
         setValidate={setValidate}
         newEvent={newEvent}
@@ -206,6 +219,12 @@ function App() {
         changeEndDate={handleNewEventEndDate}
         expresiones={expresiones.nombre}
       />
+      {showMsg === true && (
+        <p className="formDone">Evento creado exitosamente!</p>
+      )}
+      {showMsg === false && (
+        <p className="formDone">Evento eliminado exitosamente!</p>
+      )}
       <Calendar
         localizer={localizerMoment}
         startAccessor="start"
